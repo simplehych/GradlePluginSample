@@ -1,0 +1,72 @@
+plugins {
+    id 'groovy'
+    id 'maven-publish'
+    id 'maven'
+}
+
+sourceSets {
+    main{
+        groovy {
+            srcDir 'src/main/groovy'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+}
+
+repositories {
+    mavenCentral()
+}
+
+
+// 发布-本地repo方式
+//group = 'com.example.plugin'
+//version = '1.0.0'
+//publishing {
+//    repositories {
+//        maven {
+//            url = uri("$rootDir/repo")
+//        }
+//    }
+//    publications {
+//        maven(MavenPublication) {
+//            from components.java
+//        }
+//    }
+//}
+
+// 发布-nexus服务maven上传
+apply plugin: 'maven'
+uploadArchives{
+    repositories{
+        mavenDeployer{
+            //正式发布仓库
+            repository(url:"http://localhost:8081/repository/plugin-releases/"){
+                authentication(userName:"admin",password:"admin")
+            }
+            //快照版本的仓库
+//            snapshotRepository(url:"http://localhost:8081/repository/plugin-snapshots/"){
+//                authentication(userName:"admin",password:"admin")
+//            }
+
+            pom.project {
+                //版本号，如果是快照版本，其版本号后面应该添加-SNAPSHOT，否则不能正常识别上传
+                version '1.0.0'
+                //一般写项目名称即可
+                artifactId 'customplugin'
+                //组别，类似包名，保证唯一性
+                groupId 'com.example.pluginhappy'
+                //打包格式
+                packaging 'aar'
+                //描述
+                description 'plugin'
+            }
+        }
+    }
+}

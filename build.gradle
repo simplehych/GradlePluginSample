@@ -1,0 +1,73 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        google()
+        jcenter()
+
+        //方式三  Standalone project - 本地repo - 配置
+//        maven {
+//            url = uri("$rootDir/repo")
+//        }
+
+        //方式四  Standalone project - maven仓库 - 配置
+        maven {
+            url 'http://localhost:8081/repository/plugin-releases/'
+        }
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:4.0.1"
+
+        //方式三  Standalone project - 本地repo - 配置
+//        classpath "com.example.plugin:custompluginmodule:1.0.1"
+
+        //方式四  Standalone project - maven仓库 - 配置
+        classpath "com.example.pluginhappy:customplugin:1.0.0"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+// 方式一 build script
+//build.gradle
+class GreetingPlugin implements Plugin<Project> {
+
+    @Override
+    void apply(Project project) {
+        //新建task hello
+        project.task('task_hello') {
+            doLast {
+                println 'Hello from the GreetingPlugin in app'
+            }
+        }
+    }
+}
+//引入插件
+apply plugin: GreetingPlugin
+
+
+//方式二  buildSrc
+//引入 1
+//import com.buildsrc.GreetingExtensionPlugin
+//apply plugin: GreetingExtensionPlugin
+// or 引入 2
+// 通过类直接引入
+apply plugin: com.buildsrc.GreetingExtensionPlugin
+
+greetings {
+    message = 'hello'
+    greeter = 'GreetingExtensionPlugin'
+}
+
+//方式三、四  Standalone project - 本地repo
+// 通过 plugin id 引入插件
+apply plugin: 'com.example.plugin'
+ext.greetingFile="$buildDir/hello.txt"

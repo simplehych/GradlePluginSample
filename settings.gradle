@@ -1,0 +1,3 @@
+include ':custompluginmodule'
+include ':app'
+rootProject.name = "GradlePluginSample"
