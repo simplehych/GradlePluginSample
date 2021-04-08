@@ -9,10 +9,16 @@ buildscript {
 //            url = uri("$rootDir/repo")
 //        }
 
-        //方式四  Standalone project - maven仓库 - 配置
+        //方式四  Standalone project - 本地maven仓库 - 配置
         maven {
             url 'http://localhost:8081/repository/plugin-releases/'
         }
+
+        // 方式五 Standalone project - 中央maven仓库 - 配置
+        maven {
+            url 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+        }
+        mavenCentral()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.1"
@@ -20,8 +26,11 @@ buildscript {
         //方式三  Standalone project - 本地repo - 配置
 //        classpath "com.example.plugin:custompluginmodule:1.0.1"
 
-        //方式四  Standalone project - maven仓库 - 配置
-        classpath "com.example.pluginhappy:customplugin:1.0.0"
+        //方式四  Standalone project - 本地maven仓库 - 配置
+//        classpath "com.example.pluginhappy:customplugin:1.0.0"
+
+        //方式五  Standalone project - 中央maven仓库 - 配置
+        classpath "com.github.simplehych:customplugin:0.0.1-SNAPSHOT"
     }
 }
 
@@ -51,7 +60,7 @@ class GreetingPlugin implements Plugin<Project> {
     }
 }
 //引入插件
-apply plugin: GreetingPlugin
+//apply plugin: GreetingPlugin
 
 
 //方式二  buildSrc
@@ -60,14 +69,14 @@ apply plugin: GreetingPlugin
 //apply plugin: GreetingExtensionPlugin
 // or 引入 2
 // 通过类直接引入
-apply plugin: com.buildsrc.GreetingExtensionPlugin
+//apply plugin: com.buildsrc.GreetingExtensionPlugin
+//
+//greetings {
+//    message = 'hello'
+//    greeter = 'GreetingExtensionPlugin'
+//}
 
-greetings {
-    message = 'hello'
-    greeter = 'GreetingExtensionPlugin'
-}
-
-//方式三、四  Standalone project - 本地repo
+//方式三、四、五  Standalone project - 本地repo
 // 通过 plugin id 引入插件
 apply plugin: 'com.example.plugin'
-ext.greetingFile="$buildDir/hello.txt"
+ext.greetingFile = "$buildDir/hello.txt"
